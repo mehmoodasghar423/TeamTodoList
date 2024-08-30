@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1010106782653",
+    "project_id": "todolist-9fd4c",
+    "storage_bucket": "todolist-9fd4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010106782653:android:d98288ec6d433423b278d4",
+        "android_client_info": {
+          "package_name": "com.todoraytech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLAxkJt-FsasIus-UFU0Mocxg6kzXlpd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
