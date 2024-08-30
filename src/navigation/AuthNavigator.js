@@ -1,31 +1,40 @@
-// src/navigation/AuthNavigator.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import WelcomeScreen from '../screens/WelcomeScreen';
-import LoginScreen from '../screens/LoginScreen';
-import SignUpScreen from '../screens/SignUpScreen';
+import WelcomeScreen from '../screens/Auth/WelcomeScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
+import LoginScreen from '../screens/Auth/LoginScreen';
 
 const Stack = createStackNavigator();
+
+const screens = [
+  {
+    name: 'Welcome',
+    component: WelcomeScreen,
+    options: { headerShown: false },
+  },
+  {
+    name: 'Login',
+    component: LoginScreen,
+    options: { headerShown: false },
+  },
+  {
+    name: 'SignUp',
+    component: SignUpScreen,
+    options: { headerShown: false },
+  },
+];
 
 const AuthNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Welcome">
-      <Stack.Screen 
-        name="Welcome" 
-        component={WelcomeScreen} 
-        options={{ headerShown: false }} 
-
-      />
-      <Stack.Screen 
-        name="Login" 
-        component={LoginScreen} 
-        options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="SignUp" 
-        component={SignUpScreen} 
-        options={{ headerShown: false }} 
-      />
+      {screens.map((screen, index) => (
+        <Stack.Screen 
+          key={index} 
+          name={screen.name} 
+          component={screen.component} 
+          options={screen.options} 
+        />
+      ))}
     </Stack.Navigator>
   );
 };

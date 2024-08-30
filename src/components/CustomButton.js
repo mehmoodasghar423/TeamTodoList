@@ -1,9 +1,16 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const CustomButton = ({ title, onPress, buttonStyle, textStyle }) => {
+const CustomButton = ({ title, onPress, buttonStyle, textStyle, backgroundColor }) => {
   return (
-    <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        buttonStyle,
+        { backgroundColor: backgroundColor || '#4CAF50' } 
+      ]}
+      onPress={onPress}
+    >
       <Text style={[styles.buttonText, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
@@ -11,16 +18,17 @@ const CustomButton = ({ title, onPress, buttonStyle, textStyle }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#4CAF50',
     paddingVertical: 12,
     paddingHorizontal: 50,
-    borderRadius: 30,
+    borderRadius: 25,
     alignItems: 'center',
+    width:"100%",
+    marginTop:25
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontFamily: 'TitilliumWeb-Bold',
   },
 });
 
