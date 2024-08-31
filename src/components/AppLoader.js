@@ -2,7 +2,7 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-const CustomLoader = ({ visible, message }) => {
+const AppLoader = ({ visible, message }) => {
   return (
     <Modal
       transparent
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomLoader;
+export default AppLoader;

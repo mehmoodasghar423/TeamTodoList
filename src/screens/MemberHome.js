@@ -1,13 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import images from '../images';
+import AppAlert from '../components/AppAlert';
 
 const MemberHome = ({ navigation }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userName, setUserName] = useState('');
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await firestore().collection('Users').doc(auth().currentUser.uid).get();
+        if (userDoc.exists) {
+          setUserName(userDoc.data().name);
+        } else {
+          console.error('User data not found!');
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = firestore()
@@ -20,7 +41,7 @@ const MemberHome = ({ navigation }) => {
             ...doc.data(),
           }));
           setTasks(taskList);
-          console.log("tasks",tasks);
+          console.log("taskstasks",tasks);
           
           setLoading(false);
         },
@@ -34,6 +55,8 @@ const MemberHome = ({ navigation }) => {
     // Clean up the listener on unmount
     return () => unsubscribe();
   }, []);
+
+
 
   const toggleTaskStatus = async (taskId, currentStatus) => {
     try {
@@ -54,32 +77,78 @@ const MemberHome = ({ navigation }) => {
     navigation.navigate('MemberTaskDetails', { task });
   };
 
+  const handleLogout = async () => {
+    try {
+      // await auth().signOut(); 
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Auth', state: { routes: [{ name: 'WelcomeScreen' }] } }],
+      });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+
+  const handleModalClose = () => {
+    setModalVisible(false); // Close the modal
+  };
+
   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-  if (error) return <Text style={styles.error}>{error}</Text>;
+  if (error) return <Text style={styles.errorText}>{error}</Text>;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Member Home</Text>
-      <Text style={styles.title}>Task Assigned to You</Text>
-      <FlatList
-        data={tasks}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleTaskPress(item)} style={styles.taskItem}>
-            <TouchableOpacity onPress={() => toggleTaskStatus(item.id, item.status)} style={styles.checkbox}>
-              <Icon
-                name={item.status === 'complete' ? 'check-box' : 'check-box-outline-blank'}
-                size={35}
-                color={item.status === 'complete' ? '#4caf50' : '#777'}
-              />
+      <Image source={images.MemberHome} style={styles.memberHomeImage} />
+
+      <Text style={styles.headerTitle}>Member Account</Text>
+      <Text style={styles.welcomeText}>Welcome, {userName}!</Text>
+      <Text style={styles.subHeaderTitle}>Tasks Assigned to You</Text>
+
+      {tasks.length === 0 ? (
+        <Text style={styles.noTasksText}>No tasks assigned yet.</Text>
+      ) : (
+        <FlatList
+          data={tasks}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleTaskPress(item)} style={styles.taskItemContainer}>
+              <Image source={images.SingleTodo} style={styles.taskImage} />
+
+              <View style={styles.taskDetails}>
+                <Text style={styles.taskTitle}>{item.title}</Text>
+                <Text style={styles.taskDueDate}>{item.dueDate}</Text>
+              </View>
+              <TouchableOpacity onPress={() => toggleTaskStatus(item.id, item.status)} style={styles.checkboxContainer}>
+                <Icon
+                  name={item.status === 'complete' ? 'check-box' : 'check-box-outline-blank'}
+                  size={30}
+                  color={item.status === 'complete' ? '#4caf50' : '#777'}
+                />
+              </TouchableOpacity>
             </TouchableOpacity>
-            <View style={styles.taskInfo}>
-              <Text style={styles.taskTitle}>{item.title}</Text>
-              <Text style={styles.taskDueDate}>{item.dueDate}</Text>
-              <Text style={styles.taskStatus}>{item.status}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
+          )}
+        />
+      )}
+
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.logoutButton}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+
+      <AppAlert
+        visible={modalVisible}
+        onClose={handleModalClose}
+        title="Logout Confirmation"
+        message="Are you sure you want to logout?"
+        options={['Yes', 'No']}
+        onSelect={(option) => {
+          if (option === 'Yes') {
+            handleLogout();
+            handleModalClose();
+          } else {
+            handleModalClose(); // Close the modal if 'No' is selected
+          }
+        }}
       />
     </View>
   );
@@ -88,43 +157,89 @@ const MemberHome = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    backgroundColor: 'white',
   },
-  title: {
+  memberHomeImage: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+  },
+  taskImage: {
+    width: 50,
+    height: 60,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+  },
+  headerTitle: {
     fontSize: 28,
-    marginBottom: 20,
-    fontFamily:"TitilliumWeb-SemiBold"
+    marginBottom: 1,
+    fontFamily: 'TitilliumWeb-SemiBold',
+    color: 'green',
+    alignSelf: 'center',
   },
-  taskItem: {
-    padding: 10,
+  welcomeText: {
+    fontSize: 20,
+    marginBottom: 10,
+    fontFamily: 'TitilliumWeb-SemiBold',
+    color: '#333',
+    alignSelf: 'center',
+  },
+  subHeaderTitle: {
+    fontSize: 24,
+    marginBottom: 10,
+    fontFamily: 'TitilliumWeb-SemiBold',
+    marginTop: 20,
+    color: "#bc8f8f"
+  },
+  taskItemContainer: {
+    padding: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  checkbox: {
+  checkboxContainer: {
     marginRight: 10,
+    position: 'absolute',
+    right: 10,
   },
-  taskInfo: {
+  taskDetails: {
     marginLeft: 10,
   },
   taskTitle: {
     fontSize: 18,
+    fontFamily: 'TitilliumWeb-SemiBold',
+    color:"#bc8f8f"
   },
   taskDueDate: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#555',
+    fontFamily: 'TitilliumWeb-Regular',
   },
-  taskStatus: {
-    fontSize: 16,
-    color: '#777',
-  },
-  error: {
+  errorText: {
     color: 'red',
     fontSize: 16,
     marginTop: 20,
+    fontFamily: 'TitilliumWeb-Regular',
+  },
+  noTasksText: {
+    fontSize: 18,
+    fontFamily: 'TitilliumWeb-Regular',
+    color: '#555',
+    marginTop: 20,
+  },
+  logoutButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#FF5733',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'TitilliumWeb-SemiBold',
   },
 });
 

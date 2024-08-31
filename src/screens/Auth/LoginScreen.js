@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import CustomTextInput from '../../components/CustomTextInput'; 
-import CustomButton from '../../components/CustomButton'; 
-import CustomModal from '../../components/CustomModal'; 
-import CustomLoader from '../../components/CustomLoader'; 
+import GlobalTextInput from '../../components/GlobalTextInput'; 
+import PrimaryButton from '../../components/PrimaryButton'; 
+import AppAlert from '../../components/AppAlert'; 
+import AppLoader from '../../components/AppLoader'; 
 import images from '../../images';
 
 const LoginScreen = ({ navigation }) => {
@@ -36,15 +36,17 @@ const LoginScreen = ({ navigation }) => {
       if (userData) {
         setModalMessage('Logged in successfully!');
         setModalVisible(true);
-        console.log('User logged in successfully!', userData);
 
         if (userData.role === 'Admin') {
+        setModalVisible(false);
+
           navigation.reset({
             index: 0,
             routes: [{ name: 'App', state: { routes: [{ name: 'AdminHome' }] } }],
           });
           return
-        } e
+        } 
+        setModalVisible(false);
 
           navigation.reset({
             index: 0,
@@ -81,23 +83,23 @@ const LoginScreen = ({ navigation }) => {
       <Image source={images.Welcome} style={styles.welcomeImage} />
       <Text style={styles.title}>Log In to Your Account</Text>
 
-      <CustomTextInput
+      <GlobalTextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
       />
-      <CustomTextInput
+      <GlobalTextInput
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <CustomButton title="Log In" onPress={handleLogin} />
+      <PrimaryButton title="Log In" onPress={handleLogin} />
 
       {/* Custom Modal for showing messages */}
-      <CustomModal
+      <AppAlert
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         title="Alert"
@@ -105,7 +107,7 @@ const LoginScreen = ({ navigation }) => {
       />
 
       {/* Custom Loader */}
-      <CustomLoader
+      <AppLoader
         visible={loaderVisible}
         message="Logging in, please wait..."
       />

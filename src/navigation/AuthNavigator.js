@@ -7,36 +7,22 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 const Stack = createStackNavigator();
 
 const screens = [
-  {
-    name: 'Welcome',
-    component: WelcomeScreen,
-    options: { headerShown: false },
-  },
-  {
-    name: 'Login',
-    component: LoginScreen,
-    options: { headerShown: false },
-  },
-  {
-    name: 'SignUp',
-    component: SignUpScreen,
-    options: { headerShown: false },
-  },
+  { name: 'Welcome', component: WelcomeScreen },
+  { name: 'Login', component: LoginScreen },
+  { name: 'SignUp', component: SignUpScreen },
 ];
 
-const AuthNavigator = () => {
-  return (
-    <Stack.Navigator initialRouteName="Welcome">
-      {screens.map((screen, index) => (
-        <Stack.Screen 
-          key={index} 
-          name={screen.name} 
-          component={screen.component} 
-          options={screen.options} 
-        />
-      ))}
-    </Stack.Navigator>
-  );
-};
+const AuthNavigator = () => (
+  <Stack.Navigator initialRouteName="Welcome">
+    {screens.map(({ name, component }) => (
+      <Stack.Screen
+        key={name}
+        name={name}
+        component={component}
+        options={{ headerShown: false }}
+      />
+    ))}
+  </Stack.Navigator>
+);
 
 export default AuthNavigator;

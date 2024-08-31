@@ -2,26 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import firestore from '@react-native-firebase/firestore';
-import Title from '../components/Title';
-import GlobalTextInput from '../components/GlobalTextInput';
-import AssignTaskModal from '../components/AssignTaskModal';
-import PrimaryButton from '../components/PrimaryButton';
-import AppAlert from '../components/AppAlert'; // Import the new AppAlert component
+import Title from '../../../components/Title';
+import GlobalTextInput from '../../../components/GlobalTextInput';
+import AssignTaskModal from '../../../components/AssignTaskModal';
+import PrimaryButton from '../../../components/PrimaryButton';
+import AppAlert from '../../../components/AppAlert';
 
-const CreateTask = ({ navigation }) => {
-  const [date, setDate] = useState(null); // Changed to null
+const EditTask = ({ route, navigation }) => {
+  const { task } = route.params; // Get task data from params
+  const [date, setDate] = useState(task.dueDate ? new Date(task.dueDate) : null);
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
-  const [selectedMember, setSelectedMember] = useState(null);
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
-  const [priority, setPriority] = useState('Select Priority');
+  const [selectedMember, setSelectedMember] = useState(users.find(user => user.id === task.assignedTo) || null);
+  const [taskTitle, setTaskTitle] = useState(task.title);
+  const [taskDescription, setTaskDescription] = useState(task.description);
+  const [priority, setPriority] = useState(task.priority);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-
-
   const [priorityModalVisible, setPriorityModalVisible] = useState(false);
 
   useEffect(() => {
@@ -32,56 +31,46 @@ const CreateTask = ({ navigation }) => {
           id: doc.id,
           ...doc.data()
         }));
-
         const members = userList.filter(user => user.role === 'Member');
         setUsers(members);
       } catch (err) {
         console.error('Error fetching users:', err);
       }
     };
-
     fetchUsers();
   }, []);
 
   const handleMemberPress = (member) => {
     setSelectedMember(member);
-    setShowMembers(false); // Close the modal after selection
+    setShowMembers(false);
   };
 
-  // Function to handle priority selection from modal
   const handlePrioritySelect = (selectedPriority) => {
     setPriority(selectedPriority);
-    setPriorityModalVisible(false); // Close the modal after selection
+    setPriorityModalVisible(false);
   };
 
   const handleSubmit = async () => {
     if (!taskTitle || !taskDescription || !selectedMember) {
-      setModalMessage('Please fill in all fields and and select a member');
+      setModalMessage('Please fill in all fields and select a member');
       setModalVisible(true);
       return;
     }
 
     setLoading(true);
     try {
-      // Create a new task in Firestore
-      await firestore().collection('tasks').add({
+      // Update the existing task in Firestore
+      await firestore().collection('tasks').doc(task.id).update({
         title: taskTitle,
         description: taskDescription,
-        dueDate: date ? date.toDateString() : null, // Handle null date
+        dueDate: date ? date.toDateString() : null,
         priority,
         assignedTo: selectedMember.id,
         status: 'Uncomplete'
       });
-      // Reset form fields
-      setTaskTitle('');
-      setTaskDescription('');
-      setPriority('Select Priority');
-      setSelectedMember(null);
-      setDate(null); // Reset date as well
-
       navigation.navigate('AdminAllTasks');
     } catch (err) {
-      Alert.alert('Error', 'Failed to create task: ' + err.message);
+      Alert.alert('Error', 'Failed to update task: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -89,8 +78,7 @@ const CreateTask = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Title text="Create a New Task" />
-
+      <Title text="Edit this Task" />
       <Text style={styles.label}>Task Title</Text>
       <GlobalTextInput
         style={styles.input}
@@ -98,7 +86,6 @@ const CreateTask = ({ navigation }) => {
         value={taskTitle}
         onChangeText={setTaskTitle}
       />
-
       <Text style={styles.label}>Task Description</Text>
       <GlobalTextInput
         style={styles.input}
@@ -106,8 +93,6 @@ const CreateTask = ({ navigation }) => {
         value={taskDescription}
         onChangeText={setTaskDescription}
       />
-
-      {/* Due Date */}
       <View style={styles.fieldContainer}>
         <Text style={styles.fieldLabel}>Due Date</Text>
         <TouchableOpacity onPress={() => setOpen(true)}>
@@ -118,26 +103,20 @@ const CreateTask = ({ navigation }) => {
         <DatePicker
           modal
           open={open}
-          date={date || new Date()} // Handle null date
+          date={date || new Date()}
           onConfirm={(selectedDate) => {
             setOpen(false);
             setDate(selectedDate);
           }}
-          onCancel={() => {
-            setOpen(false);
-          }}
+          onCancel={() => setOpen(false)}
         />
       </View>
-
-      {/* Priority */}
       <View style={styles.fieldContainer}>
         <Text style={styles.fieldLabel}>Priority</Text>
         <TouchableOpacity onPress={() => setPriorityModalVisible(true)}>
           <Text style={styles.fieldValue}>{priority}</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Assign Task To */}
       <View style={styles.fieldContainer}>
         <Text style={styles.fieldLabel}>Assign Task To</Text>
         <TouchableOpacity onPress={() => setShowMembers(true)}>
@@ -146,20 +125,17 @@ const CreateTask = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-
       <PrimaryButton
-        title={loading ? "Creating..." : "Create Task"}
+        title={loading ? "Editing..." : "Edit Task"}
         backgroundColor="#4169e1"
         onPress={handleSubmit}
       />
-
       <AssignTaskModal
         visible={showMembers}
         users={users}
         onClose={() => setShowMembers(false)}
         onSelectMember={handleMemberPress}
       />
-
       <AppAlert
         visible={priorityModalVisible}
         title="Select Priority"
@@ -167,8 +143,7 @@ const CreateTask = ({ navigation }) => {
         onClose={() => setPriorityModalVisible(false)}
         onSelect={handlePrioritySelect}
       />
-
-<AppAlert
+      <AppAlert
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         title="Alert"
@@ -220,4 +195,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateTask;
+export default EditTask;

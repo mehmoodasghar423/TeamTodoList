@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-
+import Title from '../components/Title';
+import AppLoader from '../components/AppLoader';
 const TeamProgress = () => {
   const [teamProgress, setTeamProgress] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,17 +58,17 @@ const TeamProgress = () => {
     fetchTeamProgress();
   }, []);
 
-  if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+  // if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
   if (error) return <Text style={styles.error}>{error}</Text>;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Team Progress</Text>
+
+      <Title text="Whole Team Progress" />
       <Text style={[styles.mvpText,{marginBottom:0}]}> Most Valuable Team Member: </Text>
 
       {mvp && (
-        <Text style={styles.mvpText}>{mvp.name} ({mvp.completedTasks} completed tasks) </Text>
-       
+        <Text style={styles.mvpText}>{mvp.name} ({mvp.completedTasks} task completed) </Text>
       )}
 
       <FlatList
@@ -76,9 +77,14 @@ const TeamProgress = () => {
         renderItem={({ item }) => (
           <View style={styles.progressItem}>
             <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.completedTasks}>Completed Tasks: {item.completedTasks}</Text>
+            <Text style={styles.completedTasks}> {item.completedTasks} Task Completed </Text>
           </View>
         )}
+      />
+
+<AppLoader
+        visible={loading}
+        message="Loading, please wait..."
       />
     </View>
   );
@@ -90,22 +96,22 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 28,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
   progressItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    flexDirection:"row",
+    justifyContent:"space-between"
   },
   userName: {
     fontSize: 18,
+    fontFamily:"TitilliumWeb-SemiBold",
   },
   completedTasks: {
     fontSize: 16,
     color: '#555',
+    fontFamily:"TitilliumWeb-Regular",
+    
   },
   mvpText: {
     fontSize: 18,

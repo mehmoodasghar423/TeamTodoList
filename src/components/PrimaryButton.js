@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const CustomButton = ({ title, onPress, buttonStyle, textStyle, backgroundColor }) => {
+const PrimaryButton = ({ title, onPress, buttonStyle, textStyle, backgroundColor }) => {
   return (
     <TouchableOpacity
       style={[
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CustomButton;
+export default PrimaryButton;
