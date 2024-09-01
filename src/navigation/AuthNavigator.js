@@ -1,15 +1,15 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import WelcomeScreen from '../screens/Auth/WelcomeScreen';
-import SignUpScreen from '../screens/Auth/SignUpScreen';
-import LoginScreen from '../screens/Auth/LoginScreen';
 
+import Welcome from '../screens/Auth/Welcome';
+import SignUp from '../screens/Auth/SignUp';
+import Login from '../screens/Auth/Login';
 const Stack = createStackNavigator();
 
 const screens = [
-  { name: 'Welcome', component: WelcomeScreen },
-  { name: 'Login', component: LoginScreen },
-  { name: 'SignUp', component: SignUpScreen },
+  { name: 'Welcome', component: Welcome },
+  { name: 'SignUp', component: SignUp },
+  { name: 'Login', component: Login },
 ];
 
 const AuthNavigator = () => (

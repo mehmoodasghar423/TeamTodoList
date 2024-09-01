@@ -7,10 +7,10 @@ const Title = ({ text, color = "#4169e1" }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 28,
-    marginBottom: 10,
+    fontSize: 27,
+    marginBottom: 30,
     textAlign: 'center',
-    fontFamily: 'TitilliumWeb-Bold',
+    fontFamily: 'TitilliumWeb-SemiBold',
   },
 });
 

@@ -1,80 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import firestore from '@react-native-firebase/firestore';
 import Title from '../../../components/Title';
 import GlobalTextInput from '../../../components/GlobalTextInput';
 import AssignTaskModal from '../../../components/AssignTaskModal';
 import PrimaryButton from '../../../components/PrimaryButton';
 import AppAlert from '../../../components/AppAlert';
+import { useEditTask } from '../../../hooks/useEditTask';
+import styles from './styles';
 
 const EditTask = ({ route, navigation }) => {
-  const { task } = route.params; // Get task data from params
-  const [date, setDate] = useState(task.dueDate ? new Date(task.dueDate) : null);
-  const [open, setOpen] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [showMembers, setShowMembers] = useState(false);
-  const [selectedMember, setSelectedMember] = useState(users.find(user => user.id === task.assignedTo) || null);
-  const [taskTitle, setTaskTitle] = useState(task.title);
-  const [taskDescription, setTaskDescription] = useState(task.description);
-  const [priority, setPriority] = useState(task.priority);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [priorityModalVisible, setPriorityModalVisible] = useState(false);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const snapshot = await firestore().collection('Users').get();
-        const userList = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        const members = userList.filter(user => user.role === 'Member');
-        setUsers(members);
-      } catch (err) {
-        console.error('Error fetching users:', err);
-      }
-    };
-    fetchUsers();
-  }, []);
-
-  const handleMemberPress = (member) => {
-    setSelectedMember(member);
-    setShowMembers(false);
-  };
-
-  const handlePrioritySelect = (selectedPriority) => {
-    setPriority(selectedPriority);
-    setPriorityModalVisible(false);
-  };
-
-  const handleSubmit = async () => {
-    if (!taskTitle || !taskDescription || !selectedMember) {
-      setModalMessage('Please fill in all fields and select a member');
-      setModalVisible(true);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Update the existing task in Firestore
-      await firestore().collection('tasks').doc(task.id).update({
-        title: taskTitle,
-        description: taskDescription,
-        dueDate: date ? date.toDateString() : null,
-        priority,
-        assignedTo: selectedMember.id,
-        status: 'Uncomplete'
-      });
-      navigation.navigate('AdminAllTasks');
-    } catch (err) {
-      Alert.alert('Error', 'Failed to update task: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { task } = route.params;
+  const {
+    date, setDate, open, setOpen, users, showMembers, setShowMembers,
+    selectedMember, handleMemberPress, taskTitle, setTaskTitle,
+    taskDescription, setTaskDescription, priority, handlePrioritySelect,
+    loading, handleSubmit, modalVisible, setModalVisible, modalMessage,
+    priorityModalVisible, setPriorityModalVisible,
+  } = useEditTask(task, navigation);
 
   return (
     <View style={styles.container}>
@@ -152,47 +95,5 @@ const EditTask = ({ route, navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginVertical: 5,
-    fontFamily: 'TitilliumWeb-SemiBold',
-    color: 'grey',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 20,
-    fontFamily: 'TitilliumWeb-Regular',
-    color: 'black',
-  },
-  fieldContainer: {
-    width: '100%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    marginBottom: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  fieldLabel: {
-    fontSize: 16,
-    fontFamily: 'TitilliumWeb-SemiBold',
-    color: 'grey',
-  },
-  fieldValue: {
-    fontSize: 16,
-    fontFamily: 'TitilliumWeb-Regular',
-    color: 'black',
-  },
-});
 
 export default EditTask;

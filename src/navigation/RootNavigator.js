@@ -1,25 +1,27 @@
 import React from 'react';
-import {createSwitchNavigator} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import {createStackNavigator} from '@react-navigation/stack';
 
-const Switch = createStackNavigator();
+const Stack = createStackNavigator();
+
+const screenConfig = [
+  { name: 'Auth', component: AuthNavigator },
+  { name: 'App', component: AppNavigator },
+];
 
 const RootNavigator = () => {
   return (
-    <Switch.Navigator>
-      <Switch.Screen
-        name="Auth"
-        component={AuthNavigator}
-        options={{headerShown: false}}
-      />
-      <Switch.Screen
-        name="App"
-        component={AppNavigator}
-        options={{headerShown: false}}
-      />
-    </Switch.Navigator>
+    <Stack.Navigator>
+      {screenConfig.map(({ name, component }) => (
+        <Stack.Screen
+          key={name}
+          name={name}
+          component={component}
+          options={{ headerShown: false }}
+        />
+      ))}
+    </Stack.Navigator>
   );
 };
 

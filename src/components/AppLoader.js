@@ -1,4 +1,3 @@
-// src/components/CustomLoader.js
 import React from 'react';
 import { Modal, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 

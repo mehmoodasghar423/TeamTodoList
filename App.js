@@ -6,6 +6,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import RootNavigator from './src/navigation/RootNavigator';
 
+/**
+ * Main App Component for Team TodoList Application
+ * - Provides navigation, gesture handling, and safe area support
+ */
 const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

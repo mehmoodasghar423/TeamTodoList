@@ -1,4 +1,3 @@
-// src/components/AppAlert.js
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
