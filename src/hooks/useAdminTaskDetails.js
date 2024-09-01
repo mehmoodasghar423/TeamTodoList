@@ -23,6 +23,7 @@ const useAdminTaskDetails = (task) => {
       await firestore().collection('tasks').doc(task.id).delete();
       setAlertMessage('Task deleted successfully');
       setAlertVisible(true);
+      setAlertVisible(false);
       setLoading(false);
       navigation.goBack();
     } catch (error) {

@@ -17,6 +17,7 @@ const MemberTaskDetails = ({ route }) => {
       <TaskField label="Title:" value={task.title} />
       <TaskField label="Description:" value={task.description || 'No description provided'} />
       <TaskField label="Due Date:" value={task.dueDate} />
+      <TaskField label="Due Date:" value={task.priority} />
       <TaskField label="Status:" value={taskStatus} />
 
       <TouchableOpacity onPress={toggleTaskStatus} style={styles.checkbox}>
@@ -26,7 +27,7 @@ const MemberTaskDetails = ({ route }) => {
           color={taskStatus === 'Complete' ? '#4caf50' : '#777'}
         />
         <Text style={styles.checkboxText}>
-          {taskStatus === 'Complete' ? 'Mark as Incomplete' : 'Mark as Complete'}
+          {taskStatus === 'Complete' ? 'Mark as Uncomplete' : 'Mark as Complete'}
         </Text>
       </TouchableOpacity>
     </View>

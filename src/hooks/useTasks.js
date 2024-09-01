@@ -33,7 +33,7 @@ const useTasks = () => {
 
   const toggleTaskStatus = async (taskId, currentStatus) => {
     try {
-      const newStatus = currentStatus === 'complete' ? 'incomplete' : 'complete';
+      const newStatus = currentStatus === 'Complete' ? 'Uncomplete' : 'Complete';
       await firestore().collection('tasks').doc(taskId).update({ status: newStatus });
     } catch (err) {
       console.error('Error updating task status:', err);

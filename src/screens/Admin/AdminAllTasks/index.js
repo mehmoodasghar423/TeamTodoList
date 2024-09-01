@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import AppLoader from '../../../components/AppLoader';
 import Title from '../../../components/Title';
@@ -6,64 +6,14 @@ import images from '../../../images';
 import styles from './styles';
 import useFetchTasks from '../../../hooks/useFetchTasks';
 import useFetchUsers from '../../../hooks/useFetchUsers'; 
+import useFilterTasks from '../../../hooks/useFilterTasks'; 
 
 const AdminAllTasks = ({ navigation }) => {
   const { tasks, loading: tasksLoading, error: tasksError } = useFetchTasks();
   const { users, loading: usersLoading, error: usersError } = useFetchUsers();
-  const [filteredTasks, setFilteredTasks] = useState([]);
-  const [filter, setFilter] = useState('All');
-
-  useEffect(() => {
-    if (!tasksLoading && !usersLoading) {
-      const tasksWithUserNames = tasks.map(task => ({
-        ...task,
-        userName: users[task.assignedTo] || 'Unknown User',
-      }));
-      setFilteredTasks(tasksWithUserNames);
-    }
-  }, [tasks, users, tasksLoading, usersLoading]);
-
-  useEffect(() => {
-    applyFilter();
-  }, [filter, tasks]);
-
-  const applyFilter = () => {
-    let filtered = [...tasks];
-
-    switch (filter) {
-      case 'Due Date':
-        filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-        break;
-      case 'Priority':
-        filtered.sort((a, b) => {
-          if (a.priority === 'High' && b.priority !== 'High') return -1;
-          if (a.priority !== 'High' && b.priority === 'High') return 1;
-          return 0;
-        });
-        break;
-      case 'Assigned User':
-        filtered.sort((a, b) => a.userName.localeCompare(b.userName));
-        break;
-      case 'Completed':
-        filtered = filtered.filter(task => task.status === 'complete');
-        break;
-      default:
-        break;
-    }
-
-    setFilteredTasks(filtered);
-  };
-
-  const formatDate = dateString => {
-    const date = new Date(dateString);
-    const options = { month: 'short', day: '2-digit' };
-    return date.toLocaleDateString('en-US', options);
-  };
-
-  const truncateText = (text = '', length) => {
-    return text.length > length ? `${text.substring(0, length)}...` : text;
-  };
+  const [filter, setFilter] = React.useState('All');
   
+  const { filteredTasks } = useFilterTasks(tasks, users, filter);
 
   if (tasksLoading || usersLoading) return <AppLoader message="Loading, please wait..." />;
   if (tasksError || usersError) return <Text style={styles.error}>{tasksError || usersError}</Text>;
@@ -74,6 +24,16 @@ const AdminAllTasks = ({ navigation }) => {
 
   const handleFilter = filterType => {
     setFilter(filterType);
+  };
+
+  const formatDate = dateString => {
+    const date = new Date(dateString);
+    const options = { month: 'short', day: '2-digit' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const truncateText = (text = '', length) => {
+    return text.length > length ? `${text.substring(0, length)}...` : text;
   };
 
   return (

@@ -48,12 +48,13 @@ const MemberHome = ({ navigation }) => {
               <View style={styles.taskDetails}>
                 <Text style={styles.taskTitle}>{item.title}</Text>
                 <Text style={styles.taskDueDate}>{item.dueDate}</Text>
+                <Text style={styles.taskDueDate}>{item.status}</Text>
               </View>
               <TouchableOpacity onPress={() => toggleTaskStatus(item.id, item.status)} style={styles.checkboxContainer}>
                 <Icon
-                  name={item.status === 'complete' ? 'check-box' : 'check-box-outline-blank'}
+                  name={item.status === 'Complete' ? 'check-box' : 'check-box-outline-blank'}
                   size={30}
-                  color={item.status === 'complete' ? '#4caf50' : '#777'}
+                  color={item.status === 'Complete' ? '#4caf50' : '#777'}
                 />
               </TouchableOpacity>
             </TouchableOpacity>
