@@ -47,7 +47,7 @@ const useSignUp = (navigation) => {
         role,
       });
 
-      setModalMessage('User signed up and data saved to Database!');
+      // setModalMessage('Your account has been created successfully, Now You can Login!');
       setFormState({
         name: '',
         email: '',
@@ -56,7 +56,7 @@ const useSignUp = (navigation) => {
         modalVisible: true,
       });
       setLoaderVisible(false);
-      navigation.navigate('Login');
+      navigation.navigate('Login' ,{messsge:"Your account has been created successfully, Now You can Login!"});
     } catch (error) {
       setLoaderVisible(false);
       let message = 'An unexpected error occurred.';

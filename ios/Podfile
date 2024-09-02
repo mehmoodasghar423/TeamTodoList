@@ -7,6 +7,13 @@ require Pod::Executable.execute_command('node', ['-p',
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
+use_frameworks! :linkage => :static
+
+pod 'Firebase', :modular_headers => true
+pod 'FirebaseCoreInternal', :modular_headers => true
+pod 'GoogleUtilities', :modular_headers => true
+pod 'FirebaseCore', :modular_headers => true
+
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -16,6 +23,9 @@ end
 
 target 'TodoRayTech' do
   config = use_native_modules!
+
+  $RNFirebaseAsStaticFramework = true
+
 
   use_react_native!(
     :path => config[:reactNativePath],
