@@ -7,7 +7,7 @@ const Title = ({ text, color = "#4169e1" }) => {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 27,
+    fontSize: 25,
     marginBottom: 30,
     textAlign: 'center',
     fontFamily: 'TitilliumWeb-SemiBold',
