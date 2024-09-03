@@ -22,13 +22,15 @@ const useFilterTasks = (tasks, users, filter) => {
 
     switch (filter) {
       case 'Due Date':
-        filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-        break;
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.dueDate);
+          const dateB = new Date(b.dueDate);
+          return dateA - dateB;
+        });        break;
       case 'Priority':
         filtered.sort((a, b) => {
-          if (a.priority === 'High' && b.priority !== 'High') return -1;
-          if (a.priority !== 'High' && b.priority === 'High') return 1;
-          return 0;
+          const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+          return priorityOrder[a.priority] - priorityOrder[b.priority];
         });
         break;
       case 'Assigned User':
@@ -39,7 +41,7 @@ const useFilterTasks = (tasks, users, filter) => {
         });
         break;
       case 'Completed':
-        filtered = filtered.filter(task => task.status === 'complete');
+        filtered = filtered.filter(task => task.status === 'Complete');
         break;
       default:
         break;

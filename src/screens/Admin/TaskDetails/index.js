@@ -44,8 +44,14 @@ const AdminTaskDetails = ({ route }) => {
         onClose={() => setAlertVisible(false)}
         title={isDelete ? 'Delete Task' : 'Status'}
         message={alertMessage}
+        closeButtonText='Cancel'
         options={isDelete ? ['Yes', 'No'] : []}
-        onSelect={(option) => option === 'Yes' && confirmDelete()}
+        onSelect={(option) => {
+          if (option === 'Yes') {
+            confirmDelete();
+          }
+          setAlertVisible(false); 
+        }}
       />
       <AppLoader visible={loading} message="Deleting task, please wait..." />
     </View>

@@ -1,80 +1,86 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# RayTech Team To-Do List App
 
-# Getting Started
+This is a cross-platform mobile application built using **React Native** and **Firebase** for managing team to-do lists with role-based permissions. The app supports task creation, assignment, completion, and includes basic authentication.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Features
 
-## Step 1: Start the Metro Server
+- **Task Management**: Create, edit, delete, and mark tasks as complete.
+- **Role-Based Permissions**: 
+  - **Admins**: Can create, edit, delete tasks, and assign them to team members.
+  - **Members**: Can view and mark tasks as complete.
+- **Basic Authentication**: Sign up and log in using email and password.
+- **Offline Support**: Users remain signed in even when offline (session persistence). *(Note: i forget but now due to time shortage, this feature is not implemented)*
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Bonus Features (if implemented)
+- **Push Notifications**: Notify users when tasks are assigned or completed. *(Note: Did not work on this feature due to time constraints)*
+- **Task Filtering**: Filter tasks by due date, priority, or assigned user.
+- **Progress Tracking**: Show team progress with task completion metrics.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Getting Started
 
-```bash
-# using npm
-npm start
+Follow the instructions below to set up and run the app on your local environment.
 
-# OR using Yarn
-yarn start
-```
+### Prerequisites
 
-## Step 2: Start your Application
+Make sure you have the following tools installed:
+- **Node.js** (>= 12.x)
+- **npm** or **yarn**
+- **Android Studio** (for Android development) or **Xcode** (for iOS development)
+- **React Native CLI**
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+### Installation
 
-### For Android
+1. Clone the repository:
 
-```bash
-# using npm
-npm run android
+   ```bash
+   git clone https://github.com/your-username/raytech-todo-app.git
+   cd TodoRayTech
 
-# OR using Yarn
-yarn android
-```
+2. Install the dependencies:
 
-### For iOS
+for android
+   npm install  
 
-```bash
-# using npm
-npm run ios
+for ios 
+yarn install
+cd ios && pod install
+Note: Ensure any additional configuration needed for iOS is completed (e.g., adding necessary permissions to Info.plist).
 
-# OR using Yarn
-yarn ios
-```
+3. Configure Firebase: (i done already and stored in project but do it if needed again)
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Set up a Firebase project in the Firebase console.
+Add an Android and/or iOS app to your Firebase project.
+Download the google-services.json (for Android) and GoogleService-Info.plist (for iOS) files.
+Place them in the appropriate directories:
+android/app/ for google-services.json
+ios/ for GoogleService-Info.plist
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+4. Run the app:
 
-## Step 3: Modifying your App
+For Android:
+npx react-native run-android
+For iOS:
+npx react-native run-ios
 
-Now that you have successfully run the app, let's modify it.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+5. Ensure that your development environment is correctly set up for React Native. Follow the official React Native documentation to ensure your environment is ready to build and run React Native projects.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
-## Congratulations! :tada:
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-"# TeamTodo" 
+6. Folder Structure 
+ToDORAYTECH/
+├── android/              # Android-specific files
+├── ios/                  # iOS-specific files
+├── assets/               # contain fontsand  static assets
+├── src/
+│   ├── images/           # For images
+│   ├── libs/             # New folder for libraries
+│   ├── components/       # Reusable components
+│   ├── navigation/       # Navigation logic (e.g., AuthNavigator, AppNavigator)
+│   ├── screens/          # Application screens 
+│   ├── services/         # Empty
+│   ├── hooks/            # Custom hooks
+│   ├── context/          # Context API setup
+│   ├── styles/           # Global styles
+│   └── App.js            # Entry point of the app
+└── README.md             # Project documentation

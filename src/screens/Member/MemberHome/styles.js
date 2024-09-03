@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent:"space-between"
   },
   checkboxContainer: {
     marginRight: 10,

@@ -19,6 +19,7 @@ const AssignTaskModal = ({ visible, users, onClose, onSelectMember }) => {
               <Text style={styles.memberName}>{item.name}</Text>
             </TouchableOpacity>
           )}
+          showsVerticalScrollIndicator={false} 
         />
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Close</Text>

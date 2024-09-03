@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import images from '../../../images';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 import AppAlert from '../../../components/AppAlert';
 import styles from './styles'; 
 import useLogout from '../../../hooks/useLogout';
 import useTasks from '../../../hooks/useTasks';
 import useFetchUserData from '../../../hooks/useFetchUserData';
 import AppLoader from '../../../components/AppLoader';
+import images from '../../../images';
+import CheckBox from '../../../components/CheckBox';
+
 
 const MemberHome = ({ navigation }) => {
   const { tasks, loading: tasksLoading, error: tasksError, toggleTaskStatus } = useTasks();
@@ -43,20 +44,23 @@ const MemberHome = ({ navigation }) => {
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleTaskPress(item)} style={styles.taskItemContainer}>
-              <Image source={images.SingleTodo} style={styles.taskImage} />
+              <View style={{flexDirection:"row"}}>
 
+              <Image source={images.SingleTodo} style={styles.taskImage} />
               <View style={styles.taskDetails}>
                 <Text style={styles.taskTitle}>{item.title}</Text>
                 <Text style={styles.taskDueDate}>{item.dueDate}</Text>
                 <Text style={styles.taskDueDate}>{item.status}</Text>
               </View>
-              <TouchableOpacity onPress={() => toggleTaskStatus(item.id, item.status)} style={styles.checkboxContainer}>
-                <Icon
-                  name={item.status === 'Complete' ? 'check-box' : 'check-box-outline-blank'}
-                  size={30}
-                  color={item.status === 'Complete' ? '#4caf50' : '#777'}
-                />
-              </TouchableOpacity>
+              </View>
+
+         
+              <CheckBox
+                checked={item.status === 'Complete'}
+                onPress={() => toggleTaskStatus(item.id, item.status)}
+                borderColor="green"
+                backgroundColor="green"
+              />
             </TouchableOpacity>
           )}
         />
@@ -72,6 +76,7 @@ const MemberHome = ({ navigation }) => {
         title="Logout Confirmation"
         message="Are you sure you want to logout?"
         options={['Yes', 'No']}
+        closeButtonText='Cancel'
         onSelect={(option) => {
           if (option === 'Yes') {
             logout();

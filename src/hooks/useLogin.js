@@ -43,10 +43,15 @@ const useLogin = () => {
       console.error('Error logging in:', error);
       let message = 'An unexpected error occurred.';
 
+    
+
+
       if (error.code === 'auth/invalid-credential') {
         message = 'Provided credentials are not correct.';
       } else if (error.code === 'auth/user-not-found') {
         message = 'No user found with this email.';
+      } else if (error.code === 'auth/invalid-email') {
+        message = 'The email address is badly formatted. Please enter a valid email address.';
       } else if (error.code === 'auth/wrong-password') {
         message = 'The password is incorrect.';
       }

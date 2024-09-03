@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import images from '../../../images';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import CheckBox from '../../../components/CheckBox';
 import TaskField from '../../../components/TaskField';
 import { useToggleTaskStatus } from '../../../hooks/useToggleTaskStatus'; 
 import styles from './styles'; 
@@ -17,14 +17,15 @@ const MemberTaskDetails = ({ route }) => {
       <TaskField label="Title:" value={task.title} />
       <TaskField label="Description:" value={task.description || 'No description provided'} />
       <TaskField label="Due Date:" value={task.dueDate} />
-      <TaskField label="Due Date:" value={task.priority} />
+      <TaskField label="Priority:" value={task.priority} />
       <TaskField label="Status:" value={taskStatus} />
 
-      <TouchableOpacity onPress={toggleTaskStatus} style={styles.checkbox}>
-        <Icon
-          name={taskStatus === 'Complete' ? 'check-box' : 'check-box-outline-blank'}
-          size={30}
-          color={taskStatus === 'Complete' ? '#4caf50' : '#777'}
+      <TouchableOpacity onPress={toggleTaskStatus} style={styles.checkboxContainer}>
+        <CheckBox
+          checked={taskStatus === 'Complete'}
+          onPress={toggleTaskStatus}
+          borderColor="green"
+          backgroundColor="green"
         />
         <Text style={styles.checkboxText}>
           {taskStatus === 'Complete' ? 'Mark as Uncomplete' : 'Mark as Complete'}

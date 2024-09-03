@@ -22,6 +22,12 @@ const styles = StyleSheet.create({
     fontFamily: 'TitilliumWeb-SemiBold',
     color: 'green',
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginTop:20
+  },
 });
 
 export default styles;

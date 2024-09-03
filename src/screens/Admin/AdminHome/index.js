@@ -56,6 +56,7 @@ const AdminHome = () => {
         title="Logout Confirmation"
         message="Are you sure you want to logout?"
         options={['Yes', 'No']}
+        closeButtonText='Cancel'
         onSelect={(option) => {
           if (option === 'Yes') {
             logout();

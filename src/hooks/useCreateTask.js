@@ -48,6 +48,12 @@ const useCreateTask = (navigation) => {
       return;
     }
 
+    if (date && new Date(date) < new Date()) {
+      setModalMessage('Please select a valid future date.');
+      setModalVisible(true);
+      return;
+    }
+
     setLoading(true);
     try {
       await firestore().collection('tasks').add({

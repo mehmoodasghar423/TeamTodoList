@@ -61,6 +61,7 @@ const AdminAllTasks = ({ navigation }) => {
       ) : (
         <FlatList
           data={filteredTasks}
+          showsVerticalScrollIndicator={false} 
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity

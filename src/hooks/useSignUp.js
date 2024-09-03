@@ -47,7 +47,7 @@ const useSignUp = (navigation) => {
         role,
       });
 
-      // setModalMessage('Your account has been created successfully, Now You can Login!');
+      setModalMessage('Your account has been created successfully, Now You can Login!');
       setFormState({
         name: '',
         email: '',

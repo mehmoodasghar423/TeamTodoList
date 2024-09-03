@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
-const AppAlert = ({ visible, onClose, title, message, options, onSelect }) => {
+const AppAlert = ({ visible, onClose, title, message, options, onSelect, closeButtonText }) => {
   const renderOption = ({ item }) => (
     <TouchableOpacity onPress={() => onSelect(item)} style={styles.optionButton}>
       <Text style={styles.optionText}>{item}</Text>
@@ -30,7 +30,9 @@ const AppAlert = ({ visible, onClose, title, message, options, onSelect }) => {
           )}
           
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Cancel</Text>
+            <Text style={styles.closeButtonText}>
+              {closeButtonText || 'Ok'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
