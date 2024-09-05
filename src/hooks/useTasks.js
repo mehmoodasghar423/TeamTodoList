@@ -27,7 +27,6 @@ const useTasks = () => {
         }
       );
 
-    // Clean up the listener on unmount
     return () => unsubscribe();
   }, []);
 

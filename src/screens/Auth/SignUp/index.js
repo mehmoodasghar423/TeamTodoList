@@ -1,4 +1,3 @@
-// src/screens/SignUp.js
 import React from 'react';
 import { View, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import GlobalTextInput from '../../../components/GlobalTextInput';

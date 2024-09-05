@@ -5,51 +5,76 @@ const useTeamProgress = () => {
   const [teamProgress, setTeamProgress] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [mvp, setMVP] = useState(null); 
+  const [mvp, setMVP] = useState(null);
 
   useEffect(() => {
-    const fetchTeamProgress = async () => {
-      try {
-        const usersSnapshot = await firestore()
-          .collection('Users')
-          .where('role', '==', 'Member')
-          .get();
+    const unsubscribeUsers = firestore()
+      .collection('Users')
+      .where('role', '==', 'Member')
+      .onSnapshot(
+        async (usersSnapshot) => {
+          try {
+            const userList = usersSnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
 
-        const userList = usersSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+            const unsubscribeTasks = userList.map((user) => {
+              return firestore()
+                .collection('tasks')
+                .where('assignedTo', '==', user.id)
+                .where('status', '==', 'Complete')
+                .onSnapshot(
+                  (tasksSnapshot) => {
+                    const completedTasksCount = tasksSnapshot.size;
 
-        const teamProgressData = await Promise.all(
-          userList.map(async user => {
-            const tasksSnapshot = await firestore()
-              .collection('tasks')
-              .where('assignedTo', '==', user.id)
-              .where('status', '==', 'complete')
-              .get();
+                    setTeamProgress((prevProgress) => {
+                      const updatedProgress = prevProgress.map((progress) =>
+                        progress.id === user.id
+                          ? { ...progress, completedTasks: completedTasksCount }
+                          : progress
+                      );
 
-            return {
-              name: user.name || 'Unknown User',
-              completedTasks: tasksSnapshot.size,
+                      const topPerformer = updatedProgress.reduce((prev, current) =>
+                        prev.completedTasks > current.completedTasks ? prev : current
+                      );
+
+                      setMVP(topPerformer);
+                      return updatedProgress;
+                    });
+                  },
+                  (err) => {
+                    console.error('Error fetching tasks:', err);
+                  }
+                );
+            });
+
+            setTeamProgress(
+              userList.map((user) => ({
+                id: user.id,
+                name: user.name || 'Unknown User',
+                completedTasks: 0, 
+              }))
+            );
+
+            setLoading(false);
+
+            // Clean up task listeners
+            return () => {
+              unsubscribeTasks.forEach((unsubscribe) => unsubscribe());
             };
-          })
-        );
+          } catch (err) {
+            setError(err.message);
+            setLoading(false);
+          }
+        },
+        (err) => {
+          setError(err.message);
+          setLoading(false);
+        }
+      );
 
-        const topPerformer = teamProgressData.reduce((prev, current) =>
-          prev.completedTasks > current.completedTasks ? prev : current
-        );
-
-        setTeamProgress(teamProgressData);
-        setMVP(topPerformer);
-
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeamProgress();
+    return () => unsubscribeUsers(); 
   }, []);
 
   return { teamProgress, loading, error, mvp };

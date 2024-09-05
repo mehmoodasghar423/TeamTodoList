@@ -51,7 +51,6 @@ const useFilterTasks = (tasks, users, filter) => {
   };
 
   
-  // Map usernames to tasks
   const tasksWithUserNames = filteredTasks.map(task => ({
     ...task,
     userName: users[task.assignedTo] || 'Unknown User',

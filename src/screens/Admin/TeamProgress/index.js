@@ -5,7 +5,6 @@ import Title from '../../../components/Title';
 import useTeamProgress from '../../../hooks/useTeamProgress';
 import styles from './styles';
 
-// Utility function to truncate text
 const truncateText = (text, maxLength) => {
   if (text.length > maxLength) {
     return `${text.substring(0, maxLength)}...`;
